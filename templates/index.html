@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head><title>Student Management</title></head>
+<body>
+    <h1>Student List</h1>
+    <a href="/add">Add Student</a>
+    <ul>
+        {% for student in students %}
+            <li>{{ student.name }} (Roll: {{ student.roll }})
+                <a href="/edit/{{ loop.index0 }}">Edit</a>
+                <a href="/delete/{{ loop.index0 }}">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
