@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "sahilhub22/student-flask-simple"
+        DOCKER_IMAGE = "student-flask-simple"
     }
 
     stages {
@@ -20,19 +20,14 @@ pipeline {
             }
         }
 
-        stage('Push to DockerHub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    sh 'echo $PASS | docker login -u $USER --password-stdin'
-                    sh 'docker push $DOCKER_IMAGE:$BUILD_NUMBER'
-                }
-            }
-        }
-
         stage('Deploy') {
             steps {
-                echo "Deploy step goes here"
-                // Example: sh 'docker run -d -p 5000:5000 $DOCKER_IMAGE:$BUILD_NUMBER'
+                script {
+                    // Stop old container if running
+                    sh 'docker rm -f student-flask || true'
+                    // Run new container
+                    sh 'docker run -d --name student-flask -p 5000:5000 $DOCKER_IMAGE:$BUILD_NUMBER'
+                }
             }
         }
     }
